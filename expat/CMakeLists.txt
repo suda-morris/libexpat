@@ -970,12 +970,17 @@ write_basic_package_version_file(
     cmake/expat-config-version.cmake
     COMPATIBILITY SameMajorVersion  # i.e. semver
 )
-export(
-    TARGETS
-        expat
-    FILE
-        cmake/expat-targets.cmake  # not going to be installed
-)
+# Same switch as install(): this build-tree package file is unused when
+# Expat is embedded via add_subdirectory() with EXPAT_ENABLE_INSTALL=OFF,
+# and export() fails if the expat target inherited foreign LINK_LIBRARIES.
+if(EXPAT_ENABLE_INSTALL)
+    export(
+        TARGETS
+            expat
+        FILE
+            cmake/expat-targets.cmake  # not going to be installed
+    )
+endif()
 expat_install(
     FILES
         ${CMAKE_CURRENT_BINARY_DIR}/cmake/expat-config.cmake
